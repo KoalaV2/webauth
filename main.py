@@ -5,6 +5,12 @@ import bcrypt
 import mariadb
 from dotenv import load_dotenv
 from os import getenv
+from flask import Flask, render_template, request, redirect, url_for
+
+
+app = Flask(__name__)
+app.config['DEBUG'] = True
+app.secret_key = 'super secret key'
 
 load_dotenv()
 
@@ -57,13 +63,32 @@ class User:
             password = password.encode("utf-8")
             if bcrypt.checkpw(password,hashedpasswd):
                 print(f"Welcome {username} you have been logged in.")
+                return(f"Welcome {username} you have been logged in.")
+            else:
+                return("Wrong username or password.")
 
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+@app.route("/login", methods=['POST'])
+def loginpage():
+    user = User()
+    form_data = request.form
+    print(form_data)
+    username = form_data['username']
+    password = form_data['password']
+    output = user.login(username,password)
+    print(output)
+    return output
 
 
 def main():
-    user = User()
+    # user = User()
     # user.signup("theo","lmao")
-    user.login("theo","lmao")
+    # user.login("theo","lmao")
+    app.run()
 
 if __name__ == "__main__":
     main()
