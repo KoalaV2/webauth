@@ -65,7 +65,9 @@ class User:
                 print(f"Welcome {username} you have been logged in.")
                 return(f"Welcome {username} you have been logged in.")
             else:
+                print("Wrong username or password")
                 return("Wrong username or password.")
+        return("No user with that username found.")
 
 
 
