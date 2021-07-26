@@ -34,8 +34,7 @@ class User:
         self.c = conn.cursor()
         self.c.execute('''CREATE TABLE IF NOT EXISTS web (username VARCHAR(255),password VARCHAR(255))''')
         conn.commit()
-
-    def createuser(self,username,password):
+    def signup(self,username,password):
         self.c.execute("SELECT username from web")
         self.username = username
         self.c.execute(f"SELECT EXISTS(SELECT username FROM web WHERE username='{self.username}');")
@@ -50,9 +49,21 @@ class User:
         self.c.execute("INSERT INTO web VALUES (?,?);", (username, hashedpasswd))
         conn.commit()
 
+    def login(self,username,password):
+        self.c.execute(f"SELECT username,password from web WHERE username='{username}'")
+        for row in self.c:
+            hashedpasswd = row[1].encode("utf-8")
+            print(f"Hashed password from database: {hashedpasswd}")
+            password = password.encode("utf-8")
+            if bcrypt.checkpw(password,hashedpasswd):
+                print(f"Welcome {username} you have been logged in.")
+
+
+
 def main():
     user = User()
-    user.createuser("theo","lösenord")
+    # user.signup("theo","lmao")
+    user.login("theo","lmao")
 
 if __name__ == "__main__":
     main()
